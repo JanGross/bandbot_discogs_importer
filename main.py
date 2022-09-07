@@ -35,8 +35,8 @@ def image_closest_to_aspect(images):
     return closest if closest is not None else images[0]
 
 band_folder = sanitize_path(band.name)
-if not os.path.exists(f"assets/{band_folder}"):
-    os.makedirs(f"assets/{band_folder}")
+if not os.path.exists(f"assets/cards/{band_folder}"):
+    os.makedirs(f"assets/cards/{band_folder}")
 
 
 for member in band.members:
@@ -47,7 +47,7 @@ for member in band.members:
 
     print("Downloading image...")
     image_path = f"{band_folder}/{member.id}_{sanitize_path(member.name)}.jpeg"
-    urllib.request.urlretrieve(image_closest_to_aspect(member.images)['uri'], f"assets/{image_path}")
+    urllib.request.urlretrieve(image_closest_to_aspect(member.images)['uri'], f"assets/cards/{image_path}")
 
     member = {
         'id': member_id,
@@ -60,7 +60,7 @@ for member in band.members:
     members_json.append(member)
     member_id += 1
 
-with open(f"aseets/import/characters/{band_folder}_characters.json", "w") as characters_file:
+with open(f"assets/import/characters/{band_folder}_characters.json", "w") as characters_file:
     json.dump(members_json, characters_file, indent=4, sort_keys=False)
 
 with open(f"assets/import/bands/{band_folder}.json", "w") as band_file:
