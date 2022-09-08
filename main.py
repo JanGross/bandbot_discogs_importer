@@ -1,15 +1,13 @@
 import discogs_client, json, re, urllib.request, os
 
-client = discogs_client.Client('ExampleApplication/0.1', user_token="")
+client = discogs_client.Client('ExampleApplication/0.1', user_token="QwqnxQajRTDmDtmFgDBJCJjbAcyLFzYwPUbuLHrd")
 
-band_id = 
-member_id = 
-discogs_id = input("Enter Discogs ID: ")
+discogs_id = int(input("Enter Discogs ID: "))
 band = client.artist(discogs_id)
 
 band_json = {}
 band_json['name'] = band.name
-band_json['id'] = band_id
+band_json['id'] = discogs_id
 band_json['description'] = band.profile
 band_json['image'] = band.images[0]['uri']
 band_json['enabled'] = 0
@@ -47,18 +45,21 @@ for member in band.members:
 
     print("Downloading image...")
     image_path = f"{band_folder}/{member.id}_{sanitize_path(member.name)}.jpeg"
-    urllib.request.urlretrieve(image_closest_to_aspect(member.images)['uri'], f"assets/cards/{image_path}")
+    if not member.images:
+        print("No image found.")
+        image_path = "assets/cards/no_image.png"
+    else:
+        urllib.request.urlretrieve(image_closest_to_aspect(member.images)['uri'], f"assets/cards/{image_path}")
 
     member = {
-        'id': member_id,
-        'bandId': band_id,
+        'id': member.id,
+        'bandId': discogs_id,
         'name': member.name,
         'description': profile,
         'imageIdentifier': image_path,
         'enabled': 0
     }
     members_json.append(member)
-    member_id += 1
 
 with open(f"assets/import/characters/{band_folder}_characters.json", "w") as characters_file:
     json.dump(members_json, characters_file, indent=4, sort_keys=False)
