@@ -1,6 +1,6 @@
 import discogs_client, json, re, urllib.request, os
 
-client = discogs_client.Client('ExampleApplication/0.1', user_token="QwqnxQajRTDmDtmFgDBJCJjbAcyLFzYwPUbuLHrd")
+client = discogs_client.Client('ExampleApplication/0.1', user_token="")
 
 discogs_id = int(input("Enter Discogs ID: "))
 band = client.artist(discogs_id)
@@ -18,7 +18,7 @@ def resolve_ref(match):
     print(f"Resolving {match.group()} => ", end="")
     ref = client.artist(int(match.group()[2:-1]))
     print(f"{ref.name}")
-    return ref.name
+    return ref.name.split(" (")[0]
 
 def sanitize_path(path):
     return path.replace(" ", "_")
@@ -54,7 +54,7 @@ for member in band.members:
     member = {
         'id': member.id,
         'bandId': discogs_id,
-        'name': member.name,
+        'name': member.name.split(" (")[0],
         'description': profile,
         'imageIdentifier': image_path,
         'enabled': 0
